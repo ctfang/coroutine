@@ -47,7 +47,7 @@ class HttpConnect extends ConnectAbstract
      * @param string $buffer
      * @return mixed
      */
-    public function onSocketMessage($buffer)
+    public function onSocketMessage(string $buffer)
     {
         list($header, $body) = explode("\r\n\r\n", $buffer, 2);
 

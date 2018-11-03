@@ -21,6 +21,12 @@ class CoroutineTask implements CoroutineTaskInterface
     protected $sendValue = null;
     protected $beforeFirstYield = true;
 
+    /**
+     * CoroutineTask constructor.
+     * @param $cid
+     * @param int $pcid
+     * @param \Generator $coroutine
+     */
     public function __construct($cid, int $pcid,\Generator $coroutine)
     {
         $this->cid       = $cid;
@@ -46,11 +52,18 @@ class CoroutineTask implements CoroutineTaskInterface
         return $this->pcid;
     }
 
+    /**
+     * @param $sendValue
+     * @return mixed|void
+     */
     public function setSendValue($sendValue)
     {
         $this->sendValue = $sendValue;
     }
 
+    /**
+     * @return mixed
+     */
     public function run() {
         if ($this->beforeFirstYield) {
             $this->beforeFirstYield = false;
@@ -62,6 +75,9 @@ class CoroutineTask implements CoroutineTaskInterface
         }
     }
 
+    /**
+     * @return bool
+     */
     public function isFinished():bool
     {
         return !$this->coroutine->valid();
