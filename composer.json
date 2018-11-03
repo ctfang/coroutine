@@ -1,0 +1,27 @@
+{
+  "name": "ctfang/coroutine",
+  "description": "test the coroutine",
+  "type": "project",
+  "authors": [
+    {
+      "name": "ctfang",
+      "email": "1992053348@qq.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Apps\\": "apps/",
+      "Pupil\\": "pupil/",
+      "Easy\\": "easy/"
+    },
+    "files": [
+      "easy/Helper/Coroutine.php"
+    ]
+  },
+  "require": {
+    "filp/whoops": "^2.2",
+    "vlucas/phpdotenv": "^2.5",
+    "symfony/console": "^4.1",
+    "symfony/var-dumper": "^4.1"
+  }
+}
