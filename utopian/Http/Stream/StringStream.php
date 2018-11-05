@@ -17,10 +17,10 @@ class StringStream implements StreamInterface
 
     protected $size = 0;
 
-    public function __construct($body)
+    public function __construct($content)
     {
-        $this->body = $body;
-        $this->size = strlen($body);
+        $this->body = $content;
+        $this->size = strlen($content);
     }
 
     /**

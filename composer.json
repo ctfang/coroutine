@@ -12,10 +12,10 @@
     "psr-4": {
       "Apps\\": "apps/",
       "Pupil\\": "pupil/",
-      "Vettel\\": "vettel/"
+      "Utopian\\": "utopian/"
     },
     "files": [
-      "easy/Helper/Coroutine.php"
+      "utopian/Helper/Coroutine.php"
     ]
   },
   "require": {
@@ -23,6 +23,8 @@
     "vlucas/phpdotenv": "^2.5",
     "symfony/console": "^4.1",
     "symfony/var-dumper": "^4.1",
-    "psr/http-server-middleware": "^1.0"
+    "psr/http-server-middleware": "^1.0",
+    "swoft/http-message": "^1.0",
+    "swoft/http-server": "^1.0"
   }
 }

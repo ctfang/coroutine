@@ -158,7 +158,7 @@ class HttpConnect extends ConnectAbstract
 
         if ($this->contentLength == $this->bytesRead) {
             $this->onSocketMessage($this->stringBuffer);
-
+            unset($this->stringBuffer);
             return false;
         }
 

@@ -12,11 +12,6 @@ use Utopian\Scheduler;
 
 abstract class ConnectAbstract
 {
-    public $header = [];
-    public $body = '';
-    public $get = [];
-    public $post = [];
-
     /**
      * 设置连接回话基础信息
      *
