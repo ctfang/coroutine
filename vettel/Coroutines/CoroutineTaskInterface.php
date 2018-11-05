@@ -6,7 +6,7 @@
  * Time: 23:40
  */
 
-namespace Easy\Coroutines;
+namespace Vettel\Coroutines;
 
 
 interface CoroutineTaskInterface

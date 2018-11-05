@@ -6,10 +6,10 @@
  * Time: 20:28
  */
 
-namespace Easy\Coroutines;
+namespace Vettel\Coroutines;
 
 
-use Easy\Socket\ConnectAbstract;
+use Vettel\Socket\ConnectAbstract;
 
 interface ServerInterface
 {

@@ -6,9 +6,9 @@
  * Time: 16:36
  */
 
-namespace Easy\Socket;
+namespace Vettel\Socket;
 
-use Easy\Scheduler;
+use Vettel\Scheduler;
 
 abstract class ConnectAbstract
 {

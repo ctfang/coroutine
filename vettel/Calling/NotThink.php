@@ -6,11 +6,11 @@
  * Time: 15:14
  */
 
-namespace Easy\Calling;
+namespace Vettel\Calling;
 
 
-use Easy\Coroutines\CoroutineTaskInterface;
-use Easy\Scheduler;
+use Vettel\Coroutines\CoroutineTaskInterface;
+use Vettel\Scheduler;
 
 class NotThink extends SchedulerCall
 {

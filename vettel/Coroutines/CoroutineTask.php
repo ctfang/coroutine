@@ -6,12 +6,12 @@
  * Time: 22:25
  */
 
-namespace Easy\Coroutines;
+namespace Vettel\Coroutines;
 
 /**
  * Class CoroutineTask
  * 协程任务单位
- * @package Easy\Coroutines
+ * @package Vettel\Coroutines
  */
 class CoroutineTask implements CoroutineTaskInterface
 {

@@ -6,10 +6,10 @@
  * Time: 17:11
  */
 
-namespace Easy\Coroutines;
+namespace Vettel\Coroutines;
 
-use Easy\Coroutine;
-use Easy\Socket\ConnectAbstract;
+use Vettel\Coroutine;
+use Vettel\Socket\ConnectAbstract;
 
 class HttpCoroutine implements ServerInterface
 {

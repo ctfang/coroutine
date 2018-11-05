@@ -6,10 +6,10 @@
  * Time: 16:01
  */
 
-namespace Easy\Socket;
+namespace Vettel\Socket;
 
-use Easy\Coroutines\HttpCoroutine;
-use Easy\Scheduler;
+use Vettel\Coroutines\HttpCoroutine;
+use Vettel\Scheduler;
 
 class HttpConnect extends ConnectAbstract
 {

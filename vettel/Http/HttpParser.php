@@ -6,7 +6,7 @@
  * Time: 21:11
  */
 
-namespace Easy\Http;
+namespace Vettel\Http;
 
 
 class HttpParser

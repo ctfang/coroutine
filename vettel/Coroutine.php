@@ -6,7 +6,7 @@
  * Time: 22:23
  */
 
-namespace Easy;
+namespace Vettel;
 
 
 class Coroutine

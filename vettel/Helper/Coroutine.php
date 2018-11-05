@@ -1,7 +1,7 @@
 <?php
 
-use Easy\Coroutines\CoroutineTask;
-use Easy\Scheduler;
+use Vettel\Coroutines\CoroutineTask;
+use Vettel\Scheduler;
 
 /**
  * Created by PhpStorm.
@@ -38,7 +38,7 @@ function getParentCoroutineId(): int
  */
 function go(callable $callback):int
 {
-    return \Easy\Coroutine::go($callback);
+    return \Vettel\Coroutine::go($callback);
 }
 
 /**
@@ -47,7 +47,7 @@ function go(callable $callback):int
  * yield co_sleep(2);
  *
  * @param int $second 单位秒
- * @return \Easy\Calling\NotThink
+ * @return \Vettel\Calling\NotThink
  */
 function co_sleep(int $second)
 {
@@ -55,11 +55,11 @@ function co_sleep(int $second)
      * 暂停协程本身
      * 创建子协程，用来唤醒自己
      */
-    $scheduler  = \Easy\Coroutine::getScheduler();
+    $scheduler  = \Vettel\Coroutine::getScheduler();
     $waitingCid = $scheduler::getRunningCid();
     go(
         function () use ($second, $waitingCid) {
-            $scheduler = \Easy\Coroutine::getScheduler();
+            $scheduler = \Vettel\Coroutine::getScheduler();
             $cid       = $scheduler::getRunningPCid();
             $scheduler->waiting($waitingCid, $cid);
             $intStopTime = time() + $second;
@@ -69,5 +69,5 @@ function co_sleep(int $second)
             $scheduler->recover($waitingCid, $cid);
         }
     );
-    return new \Easy\Calling\NotThink();
+    return new \Vettel\Calling\NotThink();
 }

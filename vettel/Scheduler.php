@@ -6,13 +6,13 @@
  * Time: 22:56
  */
 
-namespace Easy;
+namespace Vettel;
 
 
-use Easy\Calling\SchedulerCall;
-use Easy\Coroutines\CoroutineTask;
-use Easy\Coroutines\CoroutineTaskInterface;
-use Easy\Socket\ConnectAbstract;
+use Vettel\Calling\SchedulerCall;
+use Vettel\Coroutines\CoroutineTask;
+use Vettel\Coroutines\CoroutineTaskInterface;
+use Vettel\Socket\ConnectAbstract;
 
 class Scheduler
 {
