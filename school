@@ -7,8 +7,8 @@
  * Time: 14:53
  */
 
-use Easy\Scheduler;
-use Easy\Socket\HttpConnect;
+use Utopian\Scheduler;
+use Utopian\Socket\HttpConnect;
 
 require_once 'vendor/autoload.php';
 

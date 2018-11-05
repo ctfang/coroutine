@@ -6,11 +6,11 @@
  * Time: 22:54
  */
 
-namespace Vettel\Calling;
+namespace Utopian\Calling;
 
 
-use Vettel\Coroutines\CoroutineTaskInterface;
-use Vettel\Scheduler;
+use Utopian\Coroutines\CoroutineTaskInterface;
+use Utopian\Scheduler;
 
 abstract class SchedulerCall
 {

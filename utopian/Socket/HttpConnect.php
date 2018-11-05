@@ -6,10 +6,15 @@
  * Time: 16:01
  */
 
-namespace Vettel\Socket;
+namespace Utopian\Socket;
 
-use Vettel\Coroutines\HttpCoroutine;
-use Vettel\Scheduler;
+use Utopian\Coroutines\HttpCoroutine;
+use Utopian\Http\HttpCode;
+use Utopian\Http\Server\Request;
+use Utopian\Http\Server\Response;
+use Utopian\Http\Stream\StringStream;
+use Utopian\Http\Uri\Uri;
+use Utopian\Scheduler;
 
 class HttpConnect extends ConnectAbstract
 {
@@ -19,7 +24,8 @@ class HttpConnect extends ConnectAbstract
     /** @var Scheduler */
     public $scheduler;
 
-    protected $writes = [];
+    /** @var Response */
+    protected $response;
 
     /** @var int 已经接受的长度 */
     public $bytesRead = 0;
@@ -27,12 +33,6 @@ class HttpConnect extends ConnectAbstract
     public $stringBuffer = '';
     /** @var int 报文定义的长度 */
     public $contentLength = 0;
-
-    public $header = [];
-    public $body = '';
-    public $get = [];
-    public $post = [];
-
 
     public function setRequestData($socket, Scheduler $scheduler)
     {
@@ -51,32 +51,30 @@ class HttpConnect extends ConnectAbstract
     {
         list($header, $body) = explode("\r\n\r\n", $buffer, 2);
 
-        $this->body = $body;
+        $request = new Request();
+        $request->withBody(new StringStream($body));
 
         $arrTemp      = explode("\r\n", $header);
         $arrMethodURL = array_shift($arrTemp);
         $arrMethodURL = explode(" ", $arrMethodURL, 3);
 
-        $server['REQUEST_TIME']    = time();
-        $server['REQUEST_METHOD']  = $arrMethodURL[0];
-        $server['SERVER_PROTOCOL'] = $arrMethodURL[2];
-        $arrUrl                    = parse_url($arrMethodURL[1]);
-        $server['REQUEST_URI']     = $arrUrl['path'];
-        if (isset($arrUrl['query'])) {
-            parse_str($arrUrl['query'], $this->get);
-        }
+        $request = $request->withRequestTarget($arrMethodURL[1]);
+        $request = $request->withUri(new Uri($arrMethodURL[1]));
+        $request = $request->withMethod($arrMethodURL[0]);
+        $request = $request->withProtocolVersion($arrMethodURL[2]);
 
-        $headers = [];
         foreach ($arrTemp as $str) {
             list($key, $strValue) = explode(": ", $str, 2);
-
-            $headers[strtolower($key)] = $strValue;
+            $request = $request->withHeader($key, $strValue);
         }
 
-        if (isset($headers['content-type'])) {
-            switch ($headers['content-type']) {
+        if ($request->getMethod() == 'POST') {
+            $post = [];
+            switch ($request->getHeader('content-type')) {
                 case 'multipart/form-data':
-                    list($headers['content-type'], $boundary) = explode("; ", $headers['content-type'], 2);
+                    list($contentType, $boundary) = explode("; ", $request->getHeader('content-type'), 2);
+
+                    $request->withHeader('content-type', $contentType);
                     list(, $boundary) = explode("=", $boundary, 2);
 
                     $post = [];
@@ -88,16 +86,13 @@ class HttpConnect extends ConnectAbstract
                     parse_str($body, $post);
                     break;
             }
-            $this->post = $post;
+            $request = $request->withQueryParams($post);
         }
-
-        $this->header = $headers;
 
         // 解析完成
         $httpHandle = new HttpCoroutine();
-        $requestGen = $httpHandle->handle($this);
-
-        $this->scheduler->newCoroutine($requestGen);
+        $response   = $httpHandle->handle($request);
+        $this->write($response);
     }
 
     /**
@@ -111,13 +106,13 @@ class HttpConnect extends ConnectAbstract
 
     /**
      * 发送数据
-     * @param string $str
+     * @param $response
      * @return mixed
      */
-    public function write(string $str)
+    public function write($response)
     {
         $this->scheduler->waitForWrite($this->id, $this);
-        $this->writes[0] = $str;
+        $this->response = $response;
     }
 
     public function getSocket()
@@ -205,11 +200,19 @@ class HttpConnect extends ConnectAbstract
      */
     public function onSocketWrite(): bool
     {
-        foreach ($this->writes as $str) {
-            fwrite($this->socket, $str);
+        if( $this->response ){
+            $response   = $this->response;
+            $statusCode = $response->getStatusCode();
+            $httpString = $response->getProtocolVersion().' '.$statusCode.' '.HttpCode::$codes[$statusCode]."\r\n";
+            foreach ($response->getHeaders() as $key=>$header){
+                $httpString .= $key.': '.$header."\r\n";
+            }
+            $httpString .= 'Content-Length: '.$response->getBody()->getSize()."\r\n";
+            $httpString .= "\r\n".$response->getBody()->getContents();
+            fwrite($this->socket, $httpString);
         }
-        fclose($this->socket);
 
+        fclose($this->socket);
         return false;
     }
 }

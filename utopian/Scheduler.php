@@ -6,13 +6,13 @@
  * Time: 22:56
  */
 
-namespace Vettel;
+namespace Utopian;
 
 
-use Vettel\Calling\SchedulerCall;
-use Vettel\Coroutines\CoroutineTask;
-use Vettel\Coroutines\CoroutineTaskInterface;
-use Vettel\Socket\ConnectAbstract;
+use Utopian\Calling\SchedulerCall;
+use Utopian\Coroutines\CoroutineTask;
+use Utopian\Coroutines\CoroutineTaskInterface;
+use Utopian\Socket\ConnectAbstract;
 
 class Scheduler
 {

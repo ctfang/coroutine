@@ -6,7 +6,7 @@
  * Time: 23:40
  */
 
-namespace Vettel\Coroutines;
+namespace Utopian\Coroutines;
 
 
 interface CoroutineTaskInterface

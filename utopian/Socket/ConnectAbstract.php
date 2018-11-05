@@ -6,9 +6,9 @@
  * Time: 16:36
  */
 
-namespace Vettel\Socket;
+namespace Utopian\Socket;
 
-use Vettel\Scheduler;
+use Utopian\Scheduler;
 
 abstract class ConnectAbstract
 {
@@ -75,5 +75,5 @@ abstract class ConnectAbstract
      * @param string $str
      * @return mixed
      */
-    abstract public function write(string $str);
+    abstract public function write($str);
 }
