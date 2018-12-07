@@ -1,0 +1,48 @@
+#!/usr/bin/env php
+<?php
+/**
+ * Created by PhpStorm.
+ * User: 明月有色
+ * Date: 2018/10/26
+ * Time: 14:53
+ */
+
+use Utopia\Application;
+
+$loader = require './vendor/autoload.php';
+
+Application::setLoader($loader);
+$application = new Application(__DIR__);
+/**
+ * 基础配置加载
+ */
+$application->loadBaseConfig();
+/**
+ * 设置socket基础调度器
+ */
+$application->setUtopia(new \Utopia\Utopia());
+/**
+ * 核心服务引导加载
+ */
+$application->loadServiceProvider();
+
+
+$application->run();
+
+
+//$utopia = new \Utopia\Utopia(__DIR__);
+//
+///**
+// * 基础设置，和初始化
+// */
+//$utopia->loadBaseConfig();
+//$utopia->init();
+//
+///**
+// * 设置协程调度
+// */
+//$utopiaCoroutines = new \Utopia\Co\Scheduler();
+//$utopia->setCoroutines($utopiaCoroutines);
+//
+//$utopia->addSocket(new \Utopia\SocketServer\HttpServer(8080));
+//$utopia->run();

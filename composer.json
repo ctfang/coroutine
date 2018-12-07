@@ -1,5 +1,5 @@
 {
-  "name": "ctfang/coroutine",
+  "name": "ctfang/utopia",
   "description": "test the coroutine",
   "type": "project",
   "authors": [
@@ -12,19 +12,19 @@
     "psr-4": {
       "Apps\\": "apps/",
       "Pupil\\": "pupil/",
-      "Utopian\\": "utopian/"
-    },
-    "files": [
-      "utopian/Helper/Coroutine.php"
-    ]
+      "Utopia\\": "utopia/"
+    }
   },
   "require": {
     "filp/whoops": "^2.2",
     "vlucas/phpdotenv": "^2.5",
     "symfony/console": "^4.1",
     "symfony/var-dumper": "^4.1",
+    "relay/relay": "2.x@dev",
     "psr/http-server-middleware": "^1.0",
-    "swoft/http-message": "^1.0",
-    "swoft/http-server": "^1.0"
+    "doctrine/annotations": "^1.6",
+    "ctfang/coroutine": "^0.0.1",
+    "ctfang/socket": "^0.0.1",
+    "hassankhan/config": "^2.0"
   }
 }
