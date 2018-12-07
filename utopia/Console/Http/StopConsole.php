@@ -20,7 +20,7 @@ class StopConsole extends Console
      */
     public function config()
     {
-        $this->setName('http:start')
+        $this->setName('http:stop')
             ->setDescription('http服务器关闭');
     }
 

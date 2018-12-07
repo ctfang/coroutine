@@ -12,7 +12,10 @@ namespace Utopia\Console\Http;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Utopia\Application;
 use Utopia\Console\Console;
+use Utopia\SocketServer\HttpServer;
+use Utopia\Utopia;
 
 class StartConsole extends Console
 {
@@ -23,7 +26,7 @@ class StartConsole extends Console
     {
         $this->setName('http:start')
             ->setDescription('http服务器启动')
-            ->addArgument('debug',InputArgument::OPTIONAL,'启动调试',false);
+            ->addArgument('debug', InputArgument::OPTIONAL, '启动调试', false);
     }
 
     /**
@@ -34,6 +37,11 @@ class StartConsole extends Console
      */
     public function handle(InputInterface $input, OutputInterface $output)
     {
-        // TODO: Implement handle() method.
+        /** @var Utopia $utopia */
+        $utopia = Application::get('utopia');
+
+        $utopia->addSocket(new HttpServer(8080));
+
+        Application::$runUtopia = true;
     }
 }

@@ -21,11 +21,8 @@ class Application
 
     /** @var Di */
     protected static $di;
-
     /** @var bool|string 根目录 */
     protected static $rootDirectory;
-    /** @var Utopia */
-    protected $utopia;
     /** @var ClassLoader 加载器 */
     protected static $loader;
 
@@ -132,11 +129,6 @@ class Application
         return $service;
     }
 
-    public function setUtopia(Utopia $utopia)
-    {
-        $this->utopia = $utopia;
-    }
-
     /**
      * 运行入口
      */
@@ -144,8 +136,10 @@ class Application
     {
         self::get('console')->run();
 
-        if(1 ){
-
+        if( self::$runUtopia ){
+            /** @var Utopia $utopia */
+            $utopia = Application::get('utopia');
+            $utopia->run();
         }
     }
 }

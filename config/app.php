@@ -9,5 +9,6 @@
 return [
     'providers'=>[
         \Utopia\Providers\ConsoleServiceProvider::class,
+        \Utopia\Providers\UtopiaLoopServiceProvider::class,
     ],
 ];
