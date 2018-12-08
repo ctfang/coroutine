@@ -11,6 +11,10 @@ namespace Utopia\Services;
 
 use Noodlehaus\AbstractConfig;
 
+/**
+ * 配置对象
+ * @package Utopia\Services
+ */
 class ConfigService extends AbstractConfig
 {
     protected $data = [];

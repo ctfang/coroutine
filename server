@@ -7,10 +7,12 @@
  * Time: 14:53
  */
 
+use Doctrine\Common\Annotations\AnnotationRegistry;
 use Utopia\Application;
 
 $loader = require './vendor/autoload.php';
 
+AnnotationRegistry::registerLoader(array($loader, "loadClass"));
 Application::setLoader($loader);
 
 $application = new Application(__DIR__);

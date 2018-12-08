@@ -8,8 +8,22 @@
 
 namespace Apps\Http\Controllers;
 
+use Psr\Http\Message\ServerRequestInterface;
+use Utopia\Annotations\RequestMapping;
 
+/**
+ * @package Apps\Http\Controllers
+ */
 class HelloWorldController
 {
-
+    /**
+     * 全局路由
+     * @RequestMapping("/")
+     * @param ServerRequestInterface $request
+     * @return array
+     */
+    public function helloWorld(ServerRequestInterface $request)
+    {
+        return ['time' => time(), 'query' => $request->getQueryParams(), 'parsed' => $request->getParsedBody()];
+    }
 }

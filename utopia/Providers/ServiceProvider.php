@@ -9,7 +9,9 @@
 namespace Utopia\Providers;
 
 
+use Utopia\Application;
 use Utopia\Di;
+use Utopia\Services\ConfigService;
 
 abstract class ServiceProvider
 {
@@ -23,6 +25,21 @@ abstract class ServiceProvider
     public function __construct(Di $di)
     {
         $this->di = $di;
+    }
+
+    /**
+     * 获取配置
+     *
+     * @param $key
+     * @param null $default
+     * @return mixed|null
+     */
+    public function getConfig($key,$default = null)
+    {
+        /** @var ConfigService $config */
+        $config = Application::get('config');
+
+        return $config->get($key,$default);
     }
 
     /**
