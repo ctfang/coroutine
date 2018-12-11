@@ -14,12 +14,10 @@ use FastRoute\RouteCollector;
 use FastRoute\RouteParser\Std;
 use FastRoute\Dispatcher\GroupCountBased as Dispatcher;
 use ReflectionClass;
-use Utopia\Annotations\Middleware;
-use Utopia\Annotations\Middlewares;
 use Utopia\Annotations\RequestMapping;
-use Utopia\Application;
 use Utopia\Helper\DirectoryHelper;
-use Utopia\Helper\RouteHelper;
+use Utopia\Http\Middlewares\Middleware;
+use Utopia\Services\MiddlewareService;
 
 /**
  * 路由
@@ -54,112 +52,56 @@ class RouteServiceProvider extends ServiceProvider
     {
         $routeParser   = new Std();
         $dataGenerator = new GroupCountBased();
-
+        $midService    = new MiddlewareService();
         /** @var RouteCollector $route */
         $route = new RouteCollector($routeParser, $dataGenerator);
-        foreach ($this->scanRoute() as $arr) {
-            /** @var RequestMapping $requestMapping */
-            $requestMapping = $arr[0];
-            /** @var RouteHelper $routeHelper */
-            $routeHelper = $arr[1];
-            $route->addRoute($requestMapping->getMethod(), $requestMapping->getRoute(), $routeHelper);
-        }
+        $this->scanRoute($route, $midService);
 
-        $dispatcher = new Dispatcher($route->getData());
-
-        $this->bindService('route',$dispatcher);
+        $this->bindService('route', new Dispatcher($route->getData()));
+        $this->bindService('middleware', $midService);
     }
 
     /**
-     * @return \Generator
+     * @param RouteCollector $route
+     * @param MiddlewareService $middlewareService
      * @throws \Doctrine\Common\Annotations\AnnotationException
      * @throws \ReflectionException
      */
-    private function scanRoute()
+    private function scanRoute(RouteCollector $route, MiddlewareService $middlewareService)
     {
-        $loader    = Application::getLoader();
-        $directory = new DirectoryHelper();
-        $directory->setLoader($loader);
-        $directory->setScanNamespace($this->namespaces);
-        $reader = new AnnotationReader();
+        $directory = new DirectoryHelper($this->namespaces);
+        $reader    = new AnnotationReader();
         foreach ($directory->scanClass() as $class) {
             if (class_exists($class)) {
                 $reflectionClass  = new ReflectionClass($class);
                 $classAnnotations = $reader->getClassAnnotations($reflectionClass);
 
-                $prefix = "";
-                $queue  = [];
+                $midQueue = [];
+                /**
+                 * 类注释，中间件，前缀
+                 */
                 foreach ($classAnnotations AS $annotation) {
                     if ($annotation instanceof Middleware) {
-                        $queue[] = $annotation->getClass();;
-                    } elseif ($annotation instanceof Middlewares) {
-                        /** @var Middleware $middleware */
-                        foreach ($annotation->getMiddlewares() as $middleware) {
-                            $queue[] = $middleware->getClass();
-                        }
+                        $midQueue[] = $annotation;
                     }
                 }
-
+                $controller = new $class();
+                $middlewareService->bindController(get_class($controller), $midQueue);
+                /**
+                 * 路由详情
+                 */
                 foreach ($reflectionClass->getMethods() as $reflectionMethod) {
                     $methodAnnotations = $reader->getMethodAnnotations($reflectionMethod);
-
+                    /** @var RequestMapping $annotation */
                     foreach ($methodAnnotations AS $annotation) {
-                        $key = "{$prefix}/{$class}/{$reflectionMethod->getName()}";
-
-                        if (!isset($this->routes[$key])) {
-                            $routeHelper = new RouteHelper();
-                            foreach ($queue as $mid) {
-                                $routeHelper->addMiddleware($this->getMiddleware($mid));
-                            }
-                            $this->routes[$key] = $routeHelper;
-                        } else {
-                            /** @var RouteHelper $routeHelper */
-                            $routeHelper = $this->routes[$key];
-                        }
-
-                        if ($annotation instanceof RequestMapping) {
-                            if (!$annotation->getRoute()) {
-                                $tem_1          = explode("\\", $class);
-                                $controllerName = end($tem_1);
-                                $tem_2          = explode('Controller', $controllerName);
-                                $className      = reset($tem_2);
-                                $className      = strtolower($className);
-                                $annotation->setRoute("{$prefix}/{$className}/{$reflectionMethod->getName()}");
-                            }
-                            $routeHelper->setClosure([new $class(), $reflectionMethod->getName()]);
-                            $this->requestMappingAnnotations[$key] = $annotation;
-                        } elseif ($annotation instanceof Middleware) {
-                            $mid = $annotation->getClass();
-                            $routeHelper->addMiddleware($this->getMiddleware($mid));
-                        } elseif ($annotation instanceof Middlewares) {
-                            /** @var Middleware $middleware */
-                            foreach ($annotation->getMiddlewares() as $middleware) {
-                                $mid = $middleware->getClass();
-                                $routeHelper->addMiddleware($this->getMiddleware($mid));
-                            }
-                        }
-
-                        $this->routes[$key] = $routeHelper;
+                        $route->addRoute(
+                            $annotation->getMethod(),
+                            $annotation->getRoute(),
+                            [$controller, $reflectionMethod->getName()]
+                        );
                     }
                 }
             }
         }
-
-        unset($this->middleware);
-
-        if($this->routes){
-            foreach ($this->routes as $key => $routeHelper) {
-                if (!isset($this->requestMappingAnnotations[$key])) break;
-                yield [$this->requestMappingAnnotations[$key], $routeHelper];
-            }
-        }
-    }
-
-    private function getMiddleware($mid)
-    {
-        if( !isset($this->middleware[$mid]) ){
-            $this->middleware[$mid] = new $mid();
-        }
-        return $this->middleware[$mid];
     }
 }

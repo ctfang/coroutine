@@ -31,9 +31,9 @@ class ExceptionMiddleware implements MiddlewareInterface
         try{
             return $handler->handle($request);
         }catch (\Error $error){
-
+            dump($error);
         }catch (\Exception $exception){
-
+            dump($exception);
         }
     }
 }

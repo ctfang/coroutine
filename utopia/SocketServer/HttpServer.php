@@ -9,15 +9,19 @@
 namespace Utopia\SocketServer;
 
 
+use Utopia\Helper\Browser;
+use Utopia\Helper\OS;
 use Utopia\Socket\Connect\HttpConnect;
 use Utopia\Socket\Scheduler;
 
 class HttpServer extends Scheduler
 {
-    public function __construct(int $port = 80,$local = 'tcp://0.0.0.0:')
+    public function __construct(int $port = 80, $local = '0.0.0.0')
     {
-        $connect          = new HttpConnect();
+        $local   = $local.':'.$port;
+        $connect = new HttpConnect();
         $connect->setHandle(new HttpHandle());
-        $this->monitor($local.$port, $connect);
+        $this->monitor('tcp://'.$local, $connect);
+        Browser::open($local);
     }
 }

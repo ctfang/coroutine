@@ -14,6 +14,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Utopia\Application;
 use Utopia\Console\Console;
+use Utopia\Services\ConfigService;
 use Utopia\SocketServer\HttpServer;
 use Utopia\Utopia;
 
@@ -39,8 +40,11 @@ class StartConsole extends Console
     {
         /** @var Utopia $utopia */
         $utopia = Application::get('utopia');
-
-        $utopia->addSocket(new HttpServer(8080));
+        /** @var ConfigService $config */
+        $config = Application::get('config');
+        $port   = $config->get('http.port', 8080);
+        $local  = $config->get('http.local', '0.0.0.0');
+        $utopia->addSocket(new HttpServer($port, $local));
 
         Application::$runUtopia = true;
     }

@@ -6,12 +6,17 @@
  * Time: 11:49
  */
 return [
-    'http'=>[
+    'http' => [
+        /** 端口 */
+        'port'               => 8080,
+        /** 访问地址 */
+        'local'              => '0.0.0.0',
+
         /**
          * 默认加载的中间件
          * 按顺序执行
          */
-        'middleware'=>[
+        'middleware'         => [
             \Apps\Http\Middlewares\ExceptionMiddleware::class,
         ],
     ],

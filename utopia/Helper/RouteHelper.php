@@ -14,7 +14,7 @@ use Psr\Http\Server\MiddlewareInterface;
 class RouteHelper
 {
     private $call = [];
-    private $middlewares = [];
+    private $middlewareMap = [];
 
     public function setClosure($call)
     {
@@ -28,11 +28,11 @@ class RouteHelper
 
     public function addMiddleware(MiddlewareInterface $middleware)
     {
-        $this->middlewares[] = $middleware;
+        $this->middlewareMap[] = $middleware;
     }
 
     public function getMiddleware()
     {
-        return $this->middlewares;
+        return $this->middlewareMap;
     }
 }

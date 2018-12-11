@@ -27,9 +27,10 @@ class DirectoryHelper
     /** @var ClassLoader */
     private $loader;
 
-    public function __construct()
+    public function __construct($namespaces)
     {
         $this->setLoader(Application::getLoader());
+        $this->setScanNamespace($namespaces);
     }
 
     /**
@@ -120,7 +121,7 @@ class DirectoryHelper
      *
      * @param array $namespaces
      */
-    public function setScanNamespace(array $namespaces)
+    protected function setScanNamespace(array $namespaces)
     {
         foreach ($namespaces as $namespace) {
             foreach ($this->findDirectoryWithNamespace($namespace) as $dir) {
